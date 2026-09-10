@@ -1,0 +1,5 @@
+# dsh-sidebar bundle patch — the layer applied when a profile lists this bundle.
+# Install via: dsh plugin --profile web add dsh-sidebar
+- insert:
+    - id: dsh-sidebar
+      name: dsh-sidebar

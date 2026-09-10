@@ -1,0 +1,60 @@
+{
+  "name": "dsh-sidebar",
+  "description": "dsh-sidebar — docked side panel for the DeepSeek Harness web interface: a tree-view file explorer, a git diff explorer, and an integrated PTY terminal, mounted as a shell overlay with a sidebar footer toggle.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node --check lib/index.js && node --check lib/client.js"
+  },
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "test",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-renderer"
+      ]
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JacopoBonta/dsh-sidebar.git"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "sidebar",
+    "panel",
+    "terminal"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.0"
+  }
+}
