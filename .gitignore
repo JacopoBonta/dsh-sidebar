@@ -1,6 +1,8 @@
 node_modules/
 lib/*.map
 .worktrees/
-preview/
+preview/*
+!preview/shots/
+!preview/shots/*.png
 .DS_Store
 *.log

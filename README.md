@@ -3,6 +3,10 @@
 A [DeepSeek Harness](https://github.com/JacopoBonta) plugin that docks a side
 panel to the right of the web interface. The panel has three tabs:
 
+| Tree — workspace file explorer | Diff — git status + unified diff | Terminal — one bash PTY per workspace |
+| --- | --- | --- |
+| ![Tree tab: workspace file explorer with a file preview pane](preview/shots/panel-tree.png) | ![Diff tab: per-file sections with kind badges, staged/unstaged tags, and hunk stats](preview/shots/panel-diff.png) | ![Terminal tab: interactive bash with typed commands](preview/shots/panel-terminal.png) |
+
 - **Tree** — a workspace file explorer. Directories expand lazily per level;
   clicking a file previews its first 64 KiB in a bottom pane.
 - **Diff** — git status for the selected workspace plus the unstaged + staged
@@ -23,8 +27,6 @@ and a toggle button appears beside Settings at the sidebar foot
 (`sidebar.footer.action` slot), using the host's `--dsw-alias-*` design tokens.
 
 ## Install
-
-From the npm/GitHub name (once hosted):
 
 ```sh
 dsh plugin --profile web add dsh-sidebar
