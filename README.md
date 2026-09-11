@@ -5,11 +5,15 @@ panel to the right of the web interface. The panel has three tabs:
 
 - **Tree** — a workspace file explorer. Directories expand lazily per level;
   clicking a file previews its first 64 KiB in a bottom pane.
-- **Diff** — git status for the selected workspace plus a colorized combined
-  unstaged + staged unified diff, with changed-file chips, a refresh button,
-  and a repo row showing the repository name, the current branch (or
-  `detached @ <sha>`), and a worktree chip when the workspace is a linked
-  worktree (hover the chip for the full worktree list).
+- **Diff** — git status for the selected workspace plus the unstaged + staged
+  unified diff, rendered as per-file collapsible sections with sticky headers
+  and `+adds −dels` hunk stats. A file list above the diff shows each changed
+  file with a kind badge (A/M/D/R/?), staged/unstaged tags, and stats; clicking
+  a row jumps to that file's section. A toolbar offers a path filter, copy
+  diff, and refresh; a changed-file count appears on the tab strip. The repo
+  row shows the repository name, the current branch (or `detached @ <sha>`),
+  and a worktree chip when the workspace is a linked worktree (hover the chip
+  for the full worktree list).
 - **Terminal** — one interactive bash PTY per workspace, sandbox-confined by
   the deployment's policy. Click the pane and type; Enter runs, Ctrl+C
   interrupts, paste is supported, and the scrollback survives panel toggles.
@@ -48,7 +52,7 @@ The host half provides a `sidebarFs` SRC-typert gateway service over the
 | --- | --- |
 | `sidebarFs/listDir` | Direct children of a directory inside a registered workspace |
 | `sidebarFs/readText` | One text file, capped at 1 MiB, with truncation flag |
-| `sidebarFs/diff` | `git status --porcelain` + combined colored-unsafe diff for a workspace root, plus repo identity (name, branch, worktrees) |
+| `sidebarFs/diff` | `git status --porcelain` + combined unstaged/staged diff (plus per-side `parts`) for a workspace root, plus repo identity (name, branch, worktrees) |
 | `sidebarFs/termSpawn` | Spawn (or reuse) one bash PTY per workspace root |
 | `sidebarFs/termRead` | Drain terminal output since a byte offset |
 | `sidebarFs/termWrite` | Write bytes to a terminal's stdin |
