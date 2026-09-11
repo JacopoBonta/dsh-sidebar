@@ -15,6 +15,13 @@ panel to the right of the web interface. The panel has three tabs:
   file with a kind badge (A/M/D/R/?), staged/unstaged tags, and stats; clicking
   a row jumps to that file's section. A toolbar offers a path filter, copy
   diff, and refresh; a changed-file count appears on the tab strip.
+  An agent-activity row sits above the diff: when the current session's agent
+  has run a shell command, the row shows the directory it actually worked in
+  (the call's resolved workdir — the session workspace, or an explicit
+  `workdir` such as a git worktree under `.worktrees/`), with the worktree's
+  branch when that directory belongs to the diffed repo. When the agent's
+  directory differs from the diffed workspace, a `switch` button re-points the
+  whole panel (Diff, Tree, Terminal, and the repo bar) at it in one click.
 - **Terminal** — one interactive bash PTY per workspace, sandbox-confined by
   the deployment's policy. Click the pane and type; Enter runs, Ctrl+C
   interrupts, paste is supported, and the scrollback survives panel toggles.
@@ -87,7 +94,7 @@ registered workspace before touching the filesystem.
 ```sh
 npm install     # brings in @deepseek-ai/cordis for tests
 npm run check   # syntax-checks lib/index.js and lib/client.js
-npm test        # pure-function tests (ring buffer, tail, descriptors, errors, worktree parsing)
+npm test        # pure-function tests (ring buffer, tail, descriptors, errors, worktree parsing, agent-cwd helpers)
 ```
 
 `lib/index.js` is the host half (cordis service + gateway); `lib/client.js` is
