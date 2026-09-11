@@ -1,4 +1,6 @@
 node_modules/
 lib/*.map
+.worktrees/
+preview/
 .DS_Store
 *.log
