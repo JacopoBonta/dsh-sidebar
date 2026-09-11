@@ -9,7 +9,7 @@ const def = globalThis.__captured;
 assert.ok(def, "client.js must register with the module loader");
 const shim = new Proxy({}, { get: () => () => null });
 const exports = def.factory((name) => { if (name === "react") return shim; throw new Error("no module " + name); });
-const { samePath, normalizeSegments, resolveShellCwd, matchWorktree, agentSegment, shellCallWorkdir, sessionRow } = exports.internals;
+const { samePath, normalizeSegments, resolveShellCwd, matchWorktree, agentSegment, agentDisplayPath, shellCallWorkdir, sessionRow } = exports.internals;
 assert.ok(exports.internals, "factory must expose the test seam");
 
 // --- samePath ---
@@ -191,6 +191,29 @@ test("agentSegment guards a non-string workspace", () => {
 	const seg = agentSegment(null, null, "/repo/main");
 	assert.equal(seg.isHere, false);
 	assert.equal(seg.worktree, null);
+});
+
+// --- agentDisplayPath ---
+
+test("agentDisplayPath relativizes a directory inside the repo root", () => {
+	assert.equal(agentDisplayPath({ root: "/repo" }, "/repo/.worktrees/agent-cwd"), ".worktrees/agent-cwd");
+	assert.equal(agentDisplayPath({ root: "/repo/" }, "/repo/src/lib"), "src/lib");
+});
+
+test("agentDisplayPath returns null outside the repo root", () => {
+	assert.equal(agentDisplayPath({ root: "/repo" }, "/other/repo/wt"), null);
+	assert.equal(agentDisplayPath(null, "/repo/wt"), null);
+	assert.equal(agentDisplayPath({}, "/repo/wt"), null);
+});
+
+test("agentDisplayPath guards malformed input", () => {
+	assert.equal(agentDisplayPath({ root: "/repo" }, null), null);
+	assert.equal(agentDisplayPath({ root: "/repo" }, ""), null);
+	assert.equal(agentDisplayPath({ root: "/repo" }, void 0), null);
+});
+
+test("agentDisplayPath ignores trailing slashes on the root", () => {
+	assert.equal(agentDisplayPath({ root: "/repo/" }, "/repo/.worktrees/wt"), ".worktrees/wt");
 });
 
 // --- shellCallWorkdir ---
