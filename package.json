@@ -1,7 +1,7 @@
 {
   "name": "dsh-sidebar",
   "description": "dsh-sidebar — docked side panel for the DeepSeek Harness web interface: a tree-view file explorer, a git diff explorer, and an integrated PTY terminal, mounted as a shell overlay with a sidebar footer toggle.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "type": "module",
   "main": "lib/index.js",

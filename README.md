@@ -14,10 +14,7 @@ panel to the right of the web interface. The panel has three tabs:
   and `+adds −dels` hunk stats. A file list above the diff shows each changed
   file with a kind badge (A/M/D/R/?), staged/unstaged tags, and stats; clicking
   a row jumps to that file's section. A toolbar offers a path filter, copy
-  diff, and refresh; a changed-file count appears on the tab strip. The repo
-  row shows the repository name, the current branch (or `detached @ <sha>`),
-  and a worktree chip when the workspace is a linked worktree (hover the chip
-  for the full worktree list).
+  diff, and refresh; a changed-file count appears on the tab strip.
 - **Terminal** — one interactive bash PTY per workspace, sandbox-confined by
   the deployment's policy. Click the pane and type; Enter runs, Ctrl+C
   interrupts, paste is supported, and the scrollback survives panel toggles.
@@ -25,6 +22,10 @@ panel to the right of the web interface. The panel has three tabs:
 The panel mounts as a `shell.overlay` slot entry (frame-wide floating layer)
 and a toggle button appears beside Settings at the sidebar foot
 (`sidebar.footer.action` slot), using the host's `--dsw-alias-*` design tokens.
+A repo bar is docked at the panel foot and visible from every tab: it shows
+the repository name, the current branch (or `detached @ <sha>`), and a
+worktree chip when the workspace is a linked worktree (hover the chip for the
+full worktree list); a refresh button re-reads the repo info on demand.
 
 ## Install
 
