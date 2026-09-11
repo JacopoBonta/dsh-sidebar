@@ -200,6 +200,12 @@ test("agentDisplayPath relativizes a directory inside the repo root", () => {
 	assert.equal(agentDisplayPath({ root: "/repo/" }, "/repo/src/lib"), "src/lib");
 });
 
+test("agentDisplayPath prefers the main root so a worktree renders compactly", () => {
+	const repo = { root: "/repo/.worktrees/agent-cwd", mainRoot: "/repo" };
+	assert.equal(agentDisplayPath(repo, "/repo/.worktrees/agent-cwd"), ".worktrees/agent-cwd");
+	assert.equal(agentDisplayPath({ root: "/repo", mainRoot: "/repo" }, "/repo/src"), "src");
+});
+
 test("agentDisplayPath returns null outside the repo root", () => {
 	assert.equal(agentDisplayPath({ root: "/repo" }, "/other/repo/wt"), null);
 	assert.equal(agentDisplayPath(null, "/repo/wt"), null);
