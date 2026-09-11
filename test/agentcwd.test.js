@@ -158,9 +158,9 @@ test("shellCallWorkdir parses the bash call's workdir", () => {
 	assert.equal(shellCallWorkdir(event), "/repo/wt");
 });
 
-test("shellCallWorkdir returns null when workdir is omitted", () => {
+test("shellCallWorkdir returns empty string when workdir is omitted", () => {
 	const event = { type: "tool/call", data: { name: "bash", arguments: JSON.stringify({ command: "ls" }) } };
-	assert.equal(shellCallWorkdir(event), null);
+	assert.equal(shellCallWorkdir(event), "");
 });
 
 test("shellCallWorkdir returns null for other tools", () => {
