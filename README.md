@@ -15,13 +15,6 @@ panel to the right of the web interface. The panel has three tabs:
   file with a kind badge (A/M/D/R/?), staged/unstaged tags, and stats; clicking
   a row jumps to that file's section. A toolbar offers a path filter, copy
   diff, and refresh; a changed-file count appears on the tab strip.
-  An agent-activity row sits above the diff: when the current session's agent
-  has run a shell command, the row shows the directory it actually worked in
-  (the call's resolved workdir — the session workspace, or an explicit
-  `workdir` such as a git worktree under `.worktrees/`), with the worktree's
-  branch when that directory belongs to the diffed repo. When the agent's
-  directory differs from the diffed workspace, a `switch` button re-points the
-  whole panel (Diff, Tree, Terminal, and the repo bar) at it in one click.
 - **Terminal** — one interactive bash PTY per workspace, sandbox-confined by
   the deployment's policy. Click the pane and type; Enter runs, Ctrl+C
   interrupts, paste is supported, and the scrollback survives panel toggles.
@@ -29,10 +22,22 @@ panel to the right of the web interface. The panel has three tabs:
 The panel mounts as a `shell.overlay` slot entry (frame-wide floating layer)
 and a toggle button appears beside Settings at the sidebar foot
 (`sidebar.footer.action` slot), using the host's `--dsw-alias-*` design tokens.
-A repo bar is docked at the panel foot and visible from every tab: it shows
-the repository name, the current branch (or `detached @ <sha>`), and a
-worktree chip when the workspace is a linked worktree (hover the chip for the
-full worktree list); a refresh button re-reads the repo info on demand.
+
+The workspace follows the current session automatically. Selecting a chat on
+the sidebar swaps the panel to that session's workspace; when that session's
+agent has run a shell command in another directory (an explicit `workdir`,
+such as a git worktree under `.worktrees/`), the panel follows it there too —
+no button, the whole panel (Tree, Diff, Terminal, repo bar) re-points itself.
+
+A repo bar is docked at the panel foot and visible from every tab. Above the
+identity row sits an agent-activity row: when the session's agent has run a
+shell command, it shows the directory the agent actually worked in (the call's
+resolved workdir), with a green dot when the panel is already showing it and
+the worktree's branch when that directory belongs to the diffed repo. The
+identity row below shows the repository name, the current branch (or
+`detached @ <sha>`), and a worktree chip when the workspace is a linked
+worktree (hover the chip for the full worktree list); a refresh button
+re-reads the repo info on demand.
 
 ## Install
 

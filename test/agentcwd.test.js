@@ -9,7 +9,7 @@ const def = globalThis.__captured;
 assert.ok(def, "client.js must register with the module loader");
 const shim = new Proxy({}, { get: () => () => null });
 const exports = def.factory((name) => { if (name === "react") return shim; throw new Error("no module " + name); });
-const { samePath, normalizeSegments, resolveShellCwd, matchWorktree, shellCallWorkdir, sessionRow } = exports.internals;
+const { samePath, normalizeSegments, resolveShellCwd, matchWorktree, agentSegment, shellCallWorkdir, sessionRow } = exports.internals;
 assert.ok(exports.internals, "factory must expose the test seam");
 
 // --- samePath ---
@@ -149,6 +149,48 @@ test("matchWorktree prefers exact over prefix", () => {
 		{ path: "/repo/main", branch: "child" },
 	];
 	assert.equal(matchWorktree(rows, "/repo/main").branch, "child");
+});
+
+// --- agentSegment ---
+
+const WT_ROWS = [
+	{ path: "/repo/main", branch: "main" },
+	{ path: "/repo/.worktrees/feature", branch: "feat/x" },
+];
+
+test("agentSegment reports here when the agent's directory is the workspace", () => {
+	const seg = agentSegment(null, "/repo/.worktrees/feature", "/repo/.worktrees/feature");
+	assert.equal(seg.isHere, true);
+	assert.equal(seg.worktree, null);
+});
+
+test("agentSegment reports away and finds the worktree branch", () => {
+	const seg = agentSegment({ worktrees: WT_ROWS }, "/repo/main", "/repo/.worktrees/feature");
+	assert.equal(seg.isHere, false);
+	assert.equal(seg.worktree.branch, "feat/x");
+});
+
+test("agentSegment ignores trailing slashes on both sides", () => {
+	const seg = agentSegment({ worktrees: WT_ROWS }, "/repo/main/", "/repo/main");
+	assert.equal(seg.isHere, true);
+});
+
+test("agentSegment: an agent directory in an unrelated repo has no chip", () => {
+	const seg = agentSegment({ worktrees: WT_ROWS }, "/repo/main", "/other/repo/wt");
+	assert.equal(seg.isHere, false);
+	assert.equal(seg.worktree, null);
+});
+
+test("agentSegment guards a missing agent directory", () => {
+	assert.equal(agentSegment(null, "/repo/main", null), null);
+	assert.equal(agentSegment(null, "/repo/main", ""), null);
+	assert.equal(agentSegment(null, "/repo/main", void 0), null);
+});
+
+test("agentSegment guards a non-string workspace", () => {
+	const seg = agentSegment(null, null, "/repo/main");
+	assert.equal(seg.isHere, false);
+	assert.equal(seg.worktree, null);
 });
 
 // --- shellCallWorkdir ---
