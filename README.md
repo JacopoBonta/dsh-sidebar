@@ -22,10 +22,22 @@ panel to the right of the web interface. The panel has three tabs:
 The panel mounts as a `shell.overlay` slot entry (frame-wide floating layer)
 and a toggle button appears beside Settings at the sidebar foot
 (`sidebar.footer.action` slot), using the host's `--dsw-alias-*` design tokens.
-A repo bar is docked at the panel foot and visible from every tab: it shows
-the repository name, the current branch (or `detached @ <sha>`), and a
-worktree chip when the workspace is a linked worktree (hover the chip for the
-full worktree list); a refresh button re-reads the repo info on demand.
+
+The workspace follows the current session automatically. Selecting a chat on
+the sidebar swaps the panel to that session's workspace; when that session's
+agent has run a shell command in another directory (an explicit `workdir`,
+such as a git worktree under `.worktrees/`), the panel follows it there too —
+no button, the whole panel (Tree, Diff, Terminal, repo bar) re-points itself.
+
+A repo bar is docked at the panel foot and visible from every tab. Above the
+identity row sits an agent-activity row: when the session's agent has run a
+shell command, it shows the directory the agent actually worked in (the call's
+resolved workdir), with a green dot when the panel is already showing it and
+the worktree's branch when that directory belongs to the diffed repo. The
+identity row below shows the repository name, the current branch (or
+`detached @ <sha>`), and a worktree chip when the workspace is a linked
+worktree (hover the chip for the full worktree list); a refresh button
+re-reads the repo info on demand.
 
 ## Install
 
@@ -87,7 +99,7 @@ registered workspace before touching the filesystem.
 ```sh
 npm install     # brings in @deepseek-ai/cordis for tests
 npm run check   # syntax-checks lib/index.js and lib/client.js
-npm test        # pure-function tests (ring buffer, tail, descriptors, errors, worktree parsing)
+npm test        # pure-function tests (ring buffer, tail, descriptors, errors, worktree parsing, agent-cwd helpers)
 ```
 
 `lib/index.js` is the host half (cordis service + gateway); `lib/client.js` is
