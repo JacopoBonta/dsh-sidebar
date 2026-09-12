@@ -25,6 +25,12 @@ test("samePath is exact otherwise", () => {
 	assert.equal(samePath("/a/b", "/a/b/c"), false);
 });
 
+test("samePath keeps the filesystem root distinct from an absent path", () => {
+	assert.equal(samePath("/", ""), false);
+	assert.equal(samePath("/", "/"), true);
+	assert.equal(samePath("//", "/"), true);
+});
+
 // --- normalizeSegments ---
 
 test("normalizeSegments drops dot segments", () => {
@@ -72,6 +78,11 @@ test("resolveShellCwd: omitted workdir is the session workspace", () => {
 	assert.equal(resolveShellCwd("", "/w/app/"), "/w/app");
 });
 
+test("resolveShellCwd: a root session cwd resolves to the root, not nothing", () => {
+	assert.equal(resolveShellCwd(void 0, "/"), "/");
+	assert.equal(resolveShellCwd("", "/"), "/");
+});
+
 test("resolveShellCwd: omitted workdir without a session cwd is null", () => {
 	assert.equal(resolveShellCwd(void 0, void 0), null);
 	assert.equal(resolveShellCwd("", ""), null);
@@ -94,6 +105,11 @@ test("resolveShellCwd uses an absolute workdir as-is", () => {
 
 test("resolveShellCwd uses a drive-letter absolute path as-is", () => {
 	assert.equal(resolveShellCwd("C:\\repo\\wt", "/w/app"), "C:\\repo\\wt");
+});
+
+test("resolveShellCwd joins a relative workdir with the Windows separator", () => {
+	assert.equal(resolveShellCwd("src", "C:\\repo\\wt"), "C:\\repo\\wt\\src");
+	assert.equal(resolveShellCwd("..", "C:\\repo\\wt\\src"), "C:\\repo\\wt\\src\\..");
 });
 
 test("resolveShellCwd: relative workdir without a session cwd stays as authored", () => {
@@ -149,6 +165,21 @@ test("matchWorktree prefers exact over prefix", () => {
 		{ path: "/repo/main", branch: "child" },
 	];
 	assert.equal(matchWorktree(rows, "/repo/main").branch, "child");
+});
+
+test("matchWorktree picks the most specific root when worktrees nest", () => {
+	const rows = [
+		{ path: "/repo", branch: "main" },
+		{ path: "/repo/.worktrees/feature", branch: "feature" },
+	];
+	assert.equal(matchWorktree(rows, "/repo/.worktrees/feature/packages/app").branch, "feature");
+	assert.equal(matchWorktree(rows, "/repo/other").branch, "main");
+});
+
+test("matchWorktree contains a child of a Windows worktree root", () => {
+	const rows = [{ path: "C:\\repo\\wt", branch: "main" }];
+	assert.equal(matchWorktree(rows, "C:\\repo\\wt\\src").branch, "main");
+	assert.equal(matchWorktree(rows, "C:\\other\\repo"), null);
 });
 
 // --- agentSegment ---
